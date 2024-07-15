@@ -23,7 +23,7 @@ class acl_WishlistMemberRoleManager {
             $role = 'level_' . $level;
             if ( ! in_array( $role, $user->roles ) ) {
                 $user->add_role( $role );
-                $this->acl_log( "User ID $user_id: Role added: $role" );
+                $this->acl_log( "User ID $user_id: Role assigned: $role" );
             }
         }
     }
