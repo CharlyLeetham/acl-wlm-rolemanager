@@ -2,7 +2,7 @@
 /*
 Plugin Name: ACL Wishlist Member Role Manager
 Plugin URI: https://askcharlyleetham.com/acl-wishlist-member-role-manager
-Description: This plugin assigns WordPress roles to users based on their Wishlist Member levels. When a user is added to a level, they are assigned the corresponding role. When a user is removed from a level, the plugin ensures any roles not associated with other levels are also removed.
+Description: This plugin assigns WordPress roles to users based on their Wishlist Member levels. When a user is added to a level, they are assigned the corresponding role. When a user is removed from a level, the plugin ensures any roles not associated with other levels are also removed. If a user is moved to a different level, all levels are checked and roles are assigned accordingly.
 Version: 1.0
 Author: Charly Leetham
 Author URI: https://askcharlyleetham.com
@@ -21,6 +21,7 @@ class acl_WishlistMemberRoleManager {
     public function __construct() {
         add_action( 'wishlistmember_add_user_levels', array( $this, 'acl_assign_roles' ), 10, 2 );
         add_action( 'wishlistmember_remove_user_levels', array( $this, 'acl_remove_roles' ), 10, 2 );
+        add_action( 'wishlistmember_move_user_levels', array( $this, 'acl_update_roles_on_move' ), 10, 2 );
     }
 
     public function acl_assign_roles( $user_id, $levels ) {
@@ -45,6 +46,11 @@ class acl_WishlistMemberRoleManager {
                 $user->remove_role( $role );
             }
         }
+    }
+
+    public function acl_update_roles_on_move( $user_id, $new_levels ) {
+        $this->acl_remove_roles( $user_id, array() );
+        $this->acl_assign_roles( $user_id, $new_levels );
     }
 }
 
