@@ -61,13 +61,24 @@ class acl_WishlistMemberRoleManager {
             }
 
             $levels = $this->acl_get_user_levels( $user_id );
+            $this->acl_log( "User ID $user_id: Current levels: " . implode( ', ', $levels ) );
+
             $this->acl_remove_roles( $user_id, array() );
+            $this->acl_log( "User ID $user_id: Roles removed." );
+
             $this->acl_assign_roles( $user_id, $levels );
+            $this->acl_log( "User ID $user_id: Roles assigned based on levels: " . implode( ', ', $levels ) );
         }
     }
 
     private function acl_get_user_levels( $user_id ) {
         $levels = wlmapi_get_member_levels( $user_id );
         return is_array( $levels ) ? array_keys( $levels ) : array();
+    }
+
+    private function acl_log( $message ) {
+        if ( WP_DEBUG === true ) {
+            error_log( $message );
+        }
     }
 }
