@@ -13,9 +13,13 @@ class acl_WishlistMemberRoleManager {
     }
 
     public function acl_assign_roles( $user_id, $levels ) {
+        $user = new WP_User( $user_id );
+        if ( in_array( 'administrator', $user->roles ) ) {
+            return;
+        }
+
         foreach ( $levels as $level ) {
             $role = 'level_' . $level;
-            $user = new WP_User( $user_id );
             if ( ! in_array( $role, $user->roles ) ) {
                 $user->add_role( $role );
             }
@@ -24,6 +28,10 @@ class acl_WishlistMemberRoleManager {
 
     public function acl_remove_roles( $user_id, $levels ) {
         $user = new WP_User( $user_id );
+        if ( in_array( 'administrator', $user->roles ) ) {
+            return;
+        }
+
         $all_levels = $this->acl_get_user_levels( $user_id );
         $all_roles = array_map( function( $level ) {
             return 'level_' . $level;
@@ -47,6 +55,11 @@ class acl_WishlistMemberRoleManager {
         );
         $user_ids = get_users( $args );
         foreach ( $user_ids as $user_id ) {
+            $user = new WP_User( $user_id );
+            if ( in_array( 'administrator', $user->roles ) ) {
+                continue;
+            }
+
             $levels = $this->acl_get_user_levels( $user_id );
             $this->acl_remove_roles( $user_id, array() );
             $this->acl_assign_roles( $user_id, $levels );
@@ -54,12 +67,7 @@ class acl_WishlistMemberRoleManager {
     }
 
     private function acl_get_user_levels( $user_id ) {
-        if ( class_exists( 'WLMAPI' ) ) {
-            $wlmapi = new WLMAPI();
-            $levels = $wlmapi->GetUserLevels( $user_id );
-            return $levels;
-        } else {
-            return array();
-        }
+        $levels = wlmapi_get_member_levels( $user_id );
+        return is_array( $levels ) ? array_keys( $levels ) : array();
     }
 }
