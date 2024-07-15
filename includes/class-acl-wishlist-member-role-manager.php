@@ -24,7 +24,7 @@ class acl_WishlistMemberRoleManager {
 
     public function acl_remove_roles( $user_id, $levels ) {
         $user = new WP_User( $user_id );
-        $all_levels = wlmapiclass::GetUserLevels( $user_id );
+        $all_levels = $this->acl_get_user_levels( $user_id );
         $all_roles = array_map( function( $level ) {
             return 'level_' . $level;
         }, $all_levels );
@@ -47,9 +47,19 @@ class acl_WishlistMemberRoleManager {
         );
         $user_ids = get_users( $args );
         foreach ( $user_ids as $user_id ) {
-            $levels = wlmapiclass::GetUserLevels( $user_id );
+            $levels = $this->acl_get_user_levels( $user_id );
             $this->acl_remove_roles( $user_id, array() );
             $this->acl_assign_roles( $user_id, $levels );
+        }
+    }
+
+    private function acl_get_user_levels( $user_id ) {
+        if ( class_exists( 'WLMAPI' ) ) {
+            $wlmapi = new WLMAPI();
+            $levels = $wlmapi->GetUserLevels( $user_id );
+            return $levels;
+        } else {
+            return array();
         }
     }
 }
