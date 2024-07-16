@@ -19,11 +19,14 @@ class acl_WishlistMemberRoleManager {
             return;
         }
 
-        foreach ( $levels as $level ) {
-            $role = 'level_' . $level;
-            if ( ! in_array( $role, $user->roles ) ) {
-                $user->add_role( $role );
-                $this->acl_log( "User ID $user_id: Role assigned: $role" );
+        foreach ( $levels as $level_id ) {
+            $level = wlmapi_the_level( $level_id );
+            if ( !is_wp_error( $level ) ) {
+                $role = 'level_' . $level_id;
+                if ( ! in_array( $role, $user->roles ) ) {
+                    $user->add_role( $role );
+                    $this->acl_log( "User ID $user_id: Role assigned: $role" );
+                }
             }
         }
     }
@@ -35,8 +38,8 @@ class acl_WishlistMemberRoleManager {
         }
 
         $all_levels = $this->acl_get_user_levels( $user_id );
-        $all_roles = array_map( function( $level ) {
-            return 'level_' . $level;
+        $all_roles = array_map( function( $level_id ) {
+            return 'level_' . $level_id;
         }, $all_levels );
 
         foreach ( $user->roles as $role ) {
@@ -83,8 +86,16 @@ class acl_WishlistMemberRoleManager {
             $this->acl_remove_roles( $user_id, array() );
             $this->acl_log( "User ID $user_id: Roles removed." );
 
-            $this->acl_assign_roles( $user_id, $levels );
-            $this->acl_log( "User ID $user_id: Roles assigned based on levels: " . implode( ', ', $levels ) );
+            foreach ( $levels as $level_id ) {
+                $level = wlmapi_the_level( $level_id );
+                if ( !is_wp_error( $level ) ) {
+                    $role = 'level_' . $level_id;
+                    if ( ! in_array( $role, $user->roles ) ) {
+                        $user->add_role( $role );
+                        $this->acl_log( "User ID $user_id: Role assigned: $role" );
+                    }
+                }
+            }
         }
 
         wp_send_json_success( array(
