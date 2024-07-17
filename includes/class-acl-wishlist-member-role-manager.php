@@ -15,11 +15,13 @@ class acl_WishlistMemberRoleManager {
 
     public function acl_assign_roles( $user_id, $levels ) {
         $user = new WP_User( $user_id );
+        $this->acl_log( "ACL Role Manager: Assign Roles. User ID $user_id: " );        
+
         if ( in_array( 'administrator', $user->roles ) ) {
             return;
         }
 
-        $this->acl_log( "ACL Role Manager: Assign Roles. User ID $user_id: " );
+
         //Current roles: " . implode( ', ', $user->roles ) );
 
         foreach ( $levels as $level_id ) {
