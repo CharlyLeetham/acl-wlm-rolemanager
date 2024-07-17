@@ -9,7 +9,7 @@ class acl_WishlistMemberRoleManager {
     public function __construct() {
         add_action( 'wishlistmember_add_user_levels', array( $this, 'acl_assign_roles' ), 10, 2 );
         add_action( 'wishlistmember_remove_user_levels', array( $this, 'acl_remove_roles' ), 10, 2 );
-        add_action( 'wishlistmember_move_user_levels', array( $this, 'acl_update_roles_on_move' ), 10, 2 );
+        add_action( 'wishlistmember_move_user_levels', array( $this, 'acl_update_roles_on_move' ), 10, 3 );
         add_action( 'wp_ajax_acl_apply_roles_batch', array( $this, 'acl_apply_roles_batch' ) );
     }
 
@@ -52,9 +52,9 @@ class acl_WishlistMemberRoleManager {
         }
     }
 
-    public function acl_update_roles_on_move( $user_id, $new_levels ) {
-        $this->acl_remove_roles( $user_id, array() );
-        $this->acl_assign_roles( $user_id, $new_levels );
+    public function acl_update_roles_on_move( $user_id, $removed_levels, $added_levels ) {
+        $this->acl_remove_roles( $user_id, $removed_levels );
+        $this->acl_assign_roles( $user_id, $added_levels );
     }
 
     public function acl_apply_roles_batch() {
@@ -85,7 +85,7 @@ class acl_WishlistMemberRoleManager {
             $levels = $this->acl_get_user_levels( $user_id );
             $this->acl_log( "User ID $user_id: Current levels: " . implode( ', ', $levels ) );
 
-            $this->acl_remove_roles( $user_id, array() );
+            $this->acl_remove_roles( $user_id, $levels );
             $this->acl_log( "User ID $user_id: Roles removed." );
 
             foreach ( $levels as $level_id ) {
