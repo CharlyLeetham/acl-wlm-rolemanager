@@ -119,4 +119,8 @@ class acl_WishlistMemberRoleManager {
     }
 
     private function acl_log( $message ) {
-        if
+        if ( WP_DEBUG === true ) {
+            error_log( $message );
+        }
+    }
+}
