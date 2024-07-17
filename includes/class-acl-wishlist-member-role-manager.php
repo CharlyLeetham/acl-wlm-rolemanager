@@ -19,7 +19,8 @@ class acl_WishlistMemberRoleManager {
             return;
         }
 
-        $this->acl_log( "ACL Role Manager: Assign Roles. User ID $user_id: Current roles: " . implode( ', ', $user->roles ) );
+        $this->acl_log( "ACL Role Manager: Assign Roles. User ID $user_id: " );
+        //Current roles: " . implode( ', ', $user->roles ) );
 
         foreach ( $levels as $level_id ) {
             $level_data = wlmapi_the_level( $level_id );
