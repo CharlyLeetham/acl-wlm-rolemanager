@@ -14,16 +14,12 @@ class acl_WishlistMemberRoleManager {
     }
 
     public function acl_assign_roles( $user_id, $levels ) {
-        $this->acl_log( "ACL Role Manager: Entered acl_assign_roles. User ID: $user_id, Levels: " . implode( ', ', $levels ) );
-        
-        $user = new WP_User( $user_id );  
-
+        $user = new WP_User( $user_id );
         if ( in_array( 'administrator', $user->roles ) ) {
             return;
         }
 
-
-        //Current roles: " . implode( ', ', $user->roles ) );
+        $this->acl_log( "ACL Role Manager: User ID $user_id: Current roles: " . implode( ', ', $user->roles ) );
 
         foreach ( $levels as $level_id ) {
             $level_data = wlmapi_the_level( $level_id );
@@ -99,16 +95,8 @@ class acl_WishlistMemberRoleManager {
             $this->acl_remove_roles( $user_id, $levels );
             $this->acl_log( "ACL Role Manager: User ID $user_id: Roles removed." );
 
-            foreach ( $levels as $level_id ) {
-                $level_data = wlmapi_the_level( $level_id );
-                if ( !is_wp_error( $level_data ) && !empty( $level_data['level'] ) && !empty( $level_data['level']['wordpress_role'] ) ) {
-                    $role = $level_data['level']['wordpress_role'];
-                    if ( ! in_array( $role, $user->roles ) ) {
-                        $user->add_role( $role );
-                        $this->acl_log( "ACL Role Manager: User ID $user_id: Role assigned based on level '{$level_data['level']['name']}': $role" );
-                    }
-                }
-            }
+            $this->acl_assign_roles( $user_id, $levels );
+            $this->acl_log( "ACL Role Manager: User ID $user_id: Roles assigned." );
         }
 
         wp_send_json_success( array(
