@@ -19,6 +19,8 @@ class acl_WishlistMemberRoleManager {
             return;
         }
 
+        $this->acl_log( "ACL Role Manager: User ID $user_id: Current roles: " . implode( ', ', $user->roles ) );
+
         foreach ( $levels as $level_id ) {
             $level_data = wlmapi_the_level( $level_id );
             if ( !is_wp_error( $level_data ) && !empty( $level_data['level'] ) && !empty( $level_data['level']['wordpress_role'] ) ) {
@@ -49,10 +51,10 @@ class acl_WishlistMemberRoleManager {
         $this->acl_log( "ACL Role Manager: User ID $user_id: All roles: " . implode( ', ', $all_roles ) );
 
         foreach ( $user->roles as $role ) {
-            $this->acl_log( "ACL Role Manager: User ID $user_id: Checking role: //$role//" );
+            $this->acl_log( "ACL Role Manager: User ID $user_id: Checking role: $role" );
             if ( ! in_array( $role, $all_roles ) ) {
                 $user->remove_role( $role );
-                $this->acl_log( "ACL Role Manager: User ID $user_id: Role removed: //$role//" );
+                $this->acl_log( "ACL Role Manager: User ID $user_id: Role removed: $role" );
             }
         }
     }
@@ -117,8 +119,4 @@ class acl_WishlistMemberRoleManager {
     }
 
     private function acl_log( $message ) {
-        if ( WP_DEBUG === true ) {
-            error_log( $message );
-        }
-    }
-}
+        if
