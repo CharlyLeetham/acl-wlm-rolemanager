@@ -25,19 +25,19 @@ class acl_WishlistMemberRoleManager {
                 $role = $level_data['level']['wordpress_role'];
                 if ( ! in_array( $role, $user->roles ) ) {
                     $user->add_role( $role );
-                    $this->acl_log( "User ID $user_id: Role assigned based on level '{$level_data['level']['name']}': $role" );
+                    $this->acl_log( "ACL Role Manager: User ID $user_id: Role assigned based on level '{$level_data['level']['name']}': $role" );
                 }
             }
         }
     }
 
     public function acl_remove_roles( $user_id, $levels ) {
+        $this->acl_log( "ACL Role Manager: Entered acl_remove_roles. User ID: $user_id, Levels: " . implode( ', ', $levels ) );
+
         $user = new WP_User( $user_id );
         if ( in_array( 'administrator', $user->roles ) ) {
             return;
         }
-
-        $this->acl_log( "User ID $user_id: Levels: $levels" );
 
         $all_levels = $this->acl_get_user_levels( $user_id );
         $all_roles = array_map( function( $level_id ) {
@@ -49,7 +49,7 @@ class acl_WishlistMemberRoleManager {
         foreach ( $user->roles as $role ) {
             if ( ! in_array( $role, $all_roles ) ) {
                 $user->remove_role( $role );
-                $this->acl_log( "User ID $user_id: Role removed: $role" );
+                $this->acl_log( "ACL Role Manager: User ID $user_id: Role removed: $role" );
             }
         }
     }
@@ -85,10 +85,10 @@ class acl_WishlistMemberRoleManager {
             }
 
             $levels = $this->acl_get_user_levels( $user_id );
-            $this->acl_log( "User ID $user_id: Current levels: " . implode( ', ', $levels ) );
+            $this->acl_log( "ACL Role Manager: User ID $user_id: Current levels: " . implode( ', ', $levels ) );
 
             $this->acl_remove_roles( $user_id, $levels );
-            $this->acl_log( "User ID $user_id: Roles removed." );
+            $this->acl_log( "ACL Role Manager: User ID $user_id: Roles removed." );
 
             foreach ( $levels as $level_id ) {
                 $level_data = wlmapi_the_level( $level_id );
@@ -96,7 +96,7 @@ class acl_WishlistMemberRoleManager {
                     $role = $level_data['level']['wordpress_role'];
                     if ( ! in_array( $role, $user->roles ) ) {
                         $user->add_role( $role );
-                        $this->acl_log( "User ID $user_id: Role assigned based on level '{$level_data['level']['name']}': $role" );
+                        $this->acl_log( "ACL Role Manager: User ID $user_id: Role assigned based on level '{$level_data['level']['name']}': $role" );
                     }
                 }
             }
