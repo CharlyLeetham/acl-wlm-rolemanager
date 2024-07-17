@@ -37,6 +37,8 @@ class acl_WishlistMemberRoleManager {
             return;
         }
 
+        $this->acl_log( "User ID $user_id: Levels: $levels" );
+
         $all_levels = $this->acl_get_user_levels( $user_id );
         $all_roles = array_map( function( $level_id ) {
             $level_data = wlmapi_the_level( $level_id );
