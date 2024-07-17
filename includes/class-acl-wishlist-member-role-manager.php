@@ -49,10 +49,10 @@ class acl_WishlistMemberRoleManager {
         $this->acl_log( "ACL Role Manager: User ID $user_id: All roles: " . implode( ', ', $all_roles ) );
 
         foreach ( $user->roles as $role ) {
-            $this->acl_log( "ACL Role Manager: User ID $user_id: Checking role: $role" );
+            $this->acl_log( "ACL Role Manager: User ID $user_id: Checking role: //$role//" );
             if ( ! in_array( $role, $all_roles ) ) {
                 $user->remove_role( $role );
-                $this->acl_log( "ACL Role Manager: User ID $user_id: Role removed: $role" );
+                $this->acl_log( "ACL Role Manager: User ID $user_id: Role removed: //$role//" );
             }
         }
     }
