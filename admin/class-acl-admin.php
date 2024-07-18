@@ -8,6 +8,7 @@ class acl_Admin {
 
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'acl_admin_menu' ) );
+        add_action( 'admin_init', array( $this, 'acl_register_settings' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'acl_enqueue_scripts' ) );
     }
 
@@ -37,7 +38,7 @@ class acl_Admin {
             'ACL Settings',
             'manage_options',
             'acl-settings',
-            array( 'acl_Settings', 'acl_settings_page' )
+            array( $this, 'acl_settings_page' )
         );
     }
 
@@ -61,6 +62,45 @@ class acl_Admin {
                 <button id="acl-start" class="button-primary">Start Applying Roles</button>
             </form>
             <div id="acl-progress"></div>
+        </div>
+        <?php
+    }
+
+    public function acl_register_settings() {
+        register_setting( 'acl-settings-group', 'acl_logging_enabled' );
+
+        add_settings_section(
+            'acl-settings-section',
+            'ACL Wishlist Member Role Manager Settings',
+            null,
+            'acl-settings'
+        );
+
+        add_settings_field(
+            'acl_logging_enabled',
+            'Enable Logging',
+            array( $this, 'acl_logging_enabled_callback' ),
+            'acl-settings',
+            'acl-settings-section'
+        );
+    }
+
+    public function acl_logging_enabled_callback() {
+        $logging_enabled = get_option( 'acl_logging_enabled', 'no' );
+        ?>
+        <input type="checkbox" name="acl_logging_enabled" value="yes" <?php checked( 'yes', $logging_enabled ); ?>>
+        <?php
+    }
+
+    public function acl_settings_page() {
+        ?>
+        <div class="wrap">
+            <h1>ACL Wishlist Member Role Manager Settings</h1>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'acl-settings-group' ); ?>
+                <?php do_settings_sections( 'acl-settings' ); ?>
+                <?php submit_button(); ?>
+            </form>
         </div>
         <?php
     }
