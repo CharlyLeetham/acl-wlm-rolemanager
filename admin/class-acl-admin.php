@@ -98,7 +98,7 @@ class acl_Admin {
     }
 
     public function acl_settings_page() {
-        ?>
+    /*   ?>
         <div class="wrap">
             <h1>ACL Wishlist Member Role Manager Settings</h1>
             <form method="post" action="options.php">
@@ -107,7 +107,7 @@ class acl_Admin {
                 <?php submit_button(); ?>
             </form>
         </div>
-        <?php
+        <?php */
     }
 
     public function acl_enqueue_scripts( $hook ) {
