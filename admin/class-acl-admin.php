@@ -18,7 +18,7 @@ class acl_Admin {
             'ACL Plugins',
             'manage_options',
             'acl-plugins',
-            '',
+            array( $this, 'acl_plugins_page' ),
             'dashicons-admin-generic',
             6
         );
@@ -40,6 +40,11 @@ class acl_Admin {
             'acl-settings',
             array( $this, 'acl_settings_page' )
         );
+    }
+
+    public function acl_plugins_page() {
+        // This can be used to create a landing page for the ACL Plugins menu, if needed.
+        echo '<h1>ACL Plugins</h1>';
     }
 
     public function acl_admin_page() {
@@ -106,7 +111,7 @@ class acl_Admin {
     }
 
     public function acl_enqueue_scripts( $hook ) {
-        if ( 'acl_plugins_page_acl-apply-roles' !== $hook ) {
+        if ( 'acl-plugins_page_acl-apply-roles' !== $hook ) {
             return;
         }
 
