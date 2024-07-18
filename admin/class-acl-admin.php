@@ -12,33 +12,33 @@ class acl_Admin {
     }
 
     public function acl_admin_menu() {
+        add_menu_page(
+            'ACL Plugins',
+            'ACL Plugins',
+            'manage_options',
+            'acl-plugins',
+            '',
+            'dashicons-admin-generic',
+            6
+        );
+
         add_submenu_page(
-            'tools.php',
+            'acl-plugins',
             'ACL Apply Roles',
             'ACL Apply Roles',
             'manage_options',
             'acl-apply-roles',
             array( $this, 'acl_admin_page' )
         );
-    }
 
-    public function acl_enqueue_scripts( $hook ) {
-        if ( 'tools_page_acl-apply-roles' !== $hook ) {
-            return;
-        }
-
-        wp_enqueue_script(
-            'acl-scripts',
-            plugin_dir_url( __FILE__ ) . '../scripts/acl-scripts.js',
-            array( 'jquery' ),
-            '1.0',
-            true
+        add_submenu_page(
+            'acl-plugins',
+            'ACL Settings',
+            'ACL Settings',
+            'manage_options',
+            'acl-settings',
+            array( 'acl_Settings', 'acl_settings_page' )
         );
-
-        wp_localize_script( 'acl-scripts', 'aclAjax', array(
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce( 'acl_apply_roles_batch_nonce' ),
-        ));
     }
 
     public function acl_admin_page() {
@@ -63,6 +63,25 @@ class acl_Admin {
             <div id="acl-progress"></div>
         </div>
         <?php
+    }
+
+    public function acl_enqueue_scripts( $hook ) {
+        if ( 'acl_plugins_page_acl-apply-roles' !== $hook ) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'acl-scripts',
+            plugin_dir_url( __FILE__ ) . '../scripts/acl-scripts.js',
+            array( 'jquery' ),
+            '1.0',
+            true
+        );
+
+        wp_localize_script( 'acl-scripts', 'aclAjax', array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce' => wp_create_nonce( 'acl_apply_roles_batch_nonce' ),
+        ));
     }
 }
 

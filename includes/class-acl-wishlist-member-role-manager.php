@@ -111,7 +111,8 @@ class acl_WishlistMemberRoleManager {
     }
 
     private function acl_log( $message ) {
-        if ( WP_DEBUG === true ) {
+        $logging_enabled = get_option( 'acl_logging_enabled', 'no' );
+        if ( $logging_enabled === 'yes' && WP_DEBUG === true ) {
             error_log( $message );
         }
     }
