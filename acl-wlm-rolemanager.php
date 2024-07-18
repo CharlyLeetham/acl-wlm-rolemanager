@@ -24,8 +24,3 @@ if ( is_admin() ) {
     require_once plugin_dir_path( __FILE__ ) . 'admin/class-acl-admin.php';
 }
 
-// Initialize the plugin
-new acl_WishlistMemberRoleManager();
-if ( is_admin() ) {
-    //new acl_Admin();
-}
