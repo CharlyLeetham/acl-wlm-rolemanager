@@ -44,7 +44,7 @@ class acl_Admin {
 
     public function acl_plugins_page() {
         // This can be used to create a landing page for the ACL Plugins menu, if needed.
-        //echo '<h1>ACL Plugins</h1>';
+        echo '<h1>ACL Plugins</h1>';
     }
 
     public function acl_admin_page() {
