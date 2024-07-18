@@ -49,3 +49,5 @@ class acl_Settings {
         <?php
     }
 }
+
+new acl_Settings();
